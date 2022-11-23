@@ -13,7 +13,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,8 +26,8 @@ public class WeatherService {
         this.cityRepository = cityRepository;
     }
 
-    public WeatherDataResponse getBestLocation(Date date) {
-        final List<WeatherDataResponse> result = getWeatherForAllCities(checkDate(date));
+    public WeatherDataResponse getBestLocation(LocalDate localDate) {
+        final List<WeatherDataResponse> result = getWeatherForAllCities(daysToRequestedDate(localDate));
         WeatherDataResponse weatherResult = null;
         final var bestLocationValue = 0;
         for (WeatherDataResponse item : result) {
@@ -59,14 +58,9 @@ public class WeatherService {
         return response;
     }
 
-    // prosze nie uzywac klasy date, prosze uzyc LocalDate, prosze zmienic nazwe na cos bardziej meaningful,
-    // moze byc daysToRequestedDate
-    private int checkDate(Date date) {
-        // nie powinno sie pozostawiac komentarzy, brak final varow
-        // przekonwertowanie z java time LocalDate na java util Date
-        // przekształcenie daty w ciąg znaków
-        Date currentDate = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
-        long differenceDays = ChronoUnit.DAYS.between(currentDate.toInstant(), date.toInstant());
+    private int daysToRequestedDate(LocalDate localDate) {
+        final LocalDate currentDate = LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
+        final long differenceDays = ChronoUnit.DAYS.between(currentDate, localDate);
         if (differenceDays >= 0 && differenceDays < 16) {
             return (int) differenceDays;
         } else {
