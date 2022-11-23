@@ -16,8 +16,7 @@ public class ResponseExceptionHandler
 
         extends ResponseEntityExceptionHandler {
 
-    // illegal argument do usuniecia
-    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<Object> handleAccessDeniedException(
             Exception ex, WebRequest request) {
         return new ResponseEntity<>(
