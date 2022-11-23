@@ -5,8 +5,7 @@ import lombok.Data;
 @Data
 public class WeatherDataResponse {
 
-    // nie spojna konwecja nazewnictwa pol obiektow, camelCase vs snakeCase,
-    // powinna byc jedna konwencja w calym projekcie
+    // nie spojna konwecja nazewnictwa pol obiektow, camelCase vs snakeCase, powinna byc jedna konwencja w calym projekcie
     private String city_name;
     private String country_code;
     private double wind_spd;

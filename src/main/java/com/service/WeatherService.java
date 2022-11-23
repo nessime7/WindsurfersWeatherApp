@@ -28,7 +28,7 @@ public class WeatherService {
     }
 
     public WeatherDataResponse getBestLocation(Date date) {
-        List<WeatherDataResponse> result = getWeatherForAllCities(checkDate(date));
+        final List<WeatherDataResponse> result = getWeatherForAllCities(checkDate(date));
         WeatherDataResponse weatherResult = null;
         final var bestLocationValue = 0;
         for (WeatherDataResponse item : result) {
@@ -49,11 +49,9 @@ public class WeatherService {
     }
 
     private List<WeatherDataResponse> getWeatherForAllCities(int specificDay) {
-        // brak final varow
-        List<WeatherDataResponse> response = new ArrayList<>();
-        List<City> cities = cityRepository.findAll();
+        final List<WeatherDataResponse> response = new ArrayList<>();
+        final List<City> cities = cityRepository.findAll();
         for (City city : cities) {
-            // prosze zmienic nazwe cityRest na cos bardziej meaningful
             CityData cityData = getWeather(city);
             WeatherDataResponse weatherDataResponse = new WeatherDataResponse(cityData, specificDay);
             response.add(weatherDataResponse);
@@ -70,7 +68,6 @@ public class WeatherService {
         Date currentDate = Date.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant());
         long differenceDays = ChronoUnit.DAYS.between(currentDate.toInstant(), date.toInstant());
         if (differenceDays >= 0 && differenceDays < 16) {
-            // czy można bez rzutowania?   int 1-32300210312, 1-3230021031210
             return (int) differenceDays;
         } else {
             throw new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE);

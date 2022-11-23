@@ -10,6 +10,7 @@ import java.util.UUID;
 @Entity
 @Data
 public class City {
+
     @Id
     @GeneratedValue(generator = "UUID")
     private UUID id;

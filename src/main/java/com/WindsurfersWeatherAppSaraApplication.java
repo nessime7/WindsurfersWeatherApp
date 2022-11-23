@@ -17,5 +17,4 @@ public class WindsurfersWeatherAppSaraApplication {
     public static void main(String[] args) {
         SpringApplication.run(WindsurfersWeatherAppSaraApplication.class, args);
     }
-
 }
