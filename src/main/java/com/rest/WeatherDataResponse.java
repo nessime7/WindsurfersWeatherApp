@@ -1,13 +1,16 @@
 package com.rest;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class WeatherDataResponse {
 
-    // nie spojna konwecja nazewnictwa pol obiektow, camelCase vs snakeCase, powinna byc jedna konwencja w calym projekcie
+    @JsonProperty("cityName")
     private String city_name;
+    @JsonProperty("countryCode")
     private String country_code;
+    @JsonProperty("windSpd")
     private double wind_spd;
     private double temp;
 
