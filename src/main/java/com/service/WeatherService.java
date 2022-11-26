@@ -78,8 +78,8 @@ public class WeatherService {
     }
 
     // niekonzystentna konwencja nazewnictwa zmiennych snakeCase vs camelCase, powinna byc jedna konwencja w projekcie
-    public double bestLocationCalculator(double wind_spd, double temp) {
-        return wind_spd * 3 + temp;
+    public double bestLocationCalculator(double windSpd, double temp) {
+        return windSpd * 3 + temp;
     }
 
 

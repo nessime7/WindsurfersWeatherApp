@@ -16,6 +16,7 @@ public class WeatherDataResponse {
 
     public WeatherDataResponse(CityData cityRest, int specificDay) {
         // obiekt weather niepotrzebny
+        // uważam że potrzebny :D - S
         WeatherData weather = cityRest.getData()[specificDay];
         city_name = cityRest.getCity_name();
         country_code = cityRest.getCountry_code();
