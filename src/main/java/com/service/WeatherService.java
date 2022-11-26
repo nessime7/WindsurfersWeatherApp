@@ -1,13 +1,13 @@
 package com.service;
 
 import com.config.MenuManagerExceptionMessages;
+import com.config.RestTemplateConfig;
 import com.model.City;
 import com.repository.CityRepository;
 import com.rest.CityData;
 import com.rest.WeatherDataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -17,12 +17,12 @@ import java.util.List;
 
 @Service
 public class WeatherService {
-    private final RestTemplate restTemplate;
+    private final RestTemplateConfig restTemplateConfig;
     private final CityRepository cityRepository;
 
     @Autowired
-    public WeatherService(RestTemplate restTemplate, CityRepository cityRepository) {
-        this.restTemplate = restTemplate;
+    public WeatherService(RestTemplateConfig restTemplateConfig, CityRepository cityRepository) {
+        this.restTemplateConfig = restTemplateConfig;
         this.cityRepository = cityRepository;
     }
 
@@ -51,7 +51,7 @@ public class WeatherService {
         final List<WeatherDataResponse> response = new ArrayList<>();
         final List<City> cities = cityRepository.findAll();
         for (City city : cities) {
-            CityData cityData = getWeather(city);
+            CityData cityData = restTemplateConfig.getWeather(city);
             WeatherDataResponse weatherDataResponse = new WeatherDataResponse(cityData, specificDay);
             response.add(weatherDataResponse);
         }
@@ -68,19 +68,7 @@ public class WeatherService {
         }
     }
 
-    // https://api.weatherbit.io/v2.0/forecast/daily?city=Raleigh,NC&key=API_KEY
-    // to moze byc logika, ktora powinna byc w dedykowanej klasie, prosze wyekstraktowac
-    private CityData getWeather(City city) {
-        String url = "https://api.weatherbit.io/v2.0/forecast/daily";
-        String apiKey = "c84ad94814fb4457b070f396b4029306";
-        String appUrl = url + "?city=" + city.getCityName() + "country=" + city.getCountryCode() + "&key=" + apiKey;
-        return restTemplate.getForObject(appUrl, CityData.class);
-    }
-
-    // niekonzystentna konwencja nazewnictwa zmiennych snakeCase vs camelCase, powinna byc jedna konwencja w projekcie
     public double bestLocationCalculator(double windSpd, double temp) {
         return windSpd * 3 + temp;
     }
-
-
 }
