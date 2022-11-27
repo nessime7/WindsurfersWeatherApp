@@ -31,13 +31,16 @@ public class WeatherService {
         WeatherDataResponse weatherResult = null;
         final var bestLocationValue = 0;
         for (WeatherDataResponse item : result) {
-            if ((item.getTemp() > 5 && item.getTemp() < 35) &&
-                    (item.getWind_spd() > 5 && item.getWind_spd() < 18)) {
-                final var currentCityLocationValue = bestLocationCalculator(item.getWind_spd(), item.getTemp());
+            if ((item.getTemperature() > 5 && item.getTemperature() < 35) &&
+                    (item.getWindSpeed() > 5 && item.getWindSpeed() < 18)) {
+                final var currentCityLocationValue = bestLocationCalculator(item.getWindSpeed(), item.getTemperature());
                 if (currentCityLocationValue > bestLocationValue) {
                     weatherResult = item;
                 }
             }
+        }
+        if (weatherResult == null) {
+            throw new IllegalStateException(MenuManagerExceptionMessages.NULL_DATA_RESPONSE);
         }
         return weatherResult;
 //        return result.stream()
@@ -48,19 +51,23 @@ public class WeatherService {
     }
 
     private List<WeatherDataResponse> getWeatherForAllCities(int specificDay) {
-        final List<WeatherDataResponse> response = new ArrayList<>();
-        final List<City> cities = cityRepository.findAll();
-        for (City city : cities) {
-            CityData cityData = restTemplateConfig.getWeather(city);
-            WeatherDataResponse weatherDataResponse = new WeatherDataResponse(cityData, specificDay);
+        final var response = new ArrayList<WeatherDataResponse>();
+        final var cities = cityRepository.findAll();
+        for (var city : cities) {
+            final var cityName = restTemplateConfig.getWeather(city).getCityName();
+            final var countryCode = restTemplateConfig.getWeather(city).getCountryCode();
+            final var data = restTemplateConfig.getWeather(city).getData()[specificDay];
+            final var windSpeed = data.getWindSpeed();
+            final var temperature = data.getTemperature();
+            final var weatherDataResponse = new WeatherDataResponse(cityName, countryCode, windSpeed, temperature);
             response.add(weatherDataResponse);
         }
         return response;
     }
 
     private int daysToRequestedDate(LocalDate localDate) {
-        final LocalDate currentDate = LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
-        final long differenceDays = ChronoUnit.DAYS.between(currentDate, localDate);
+        final var currentDate = LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
+        final var differenceDays = ChronoUnit.DAYS.between(currentDate, localDate);
         if (differenceDays >= 0 && differenceDays < 16) {
             return (int) differenceDays;
         } else {
