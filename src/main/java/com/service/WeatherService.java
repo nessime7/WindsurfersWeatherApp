@@ -2,9 +2,7 @@ package com.service;
 
 import com.config.MenuManagerExceptionMessages;
 import com.config.RestTemplateConfig;
-import com.model.City;
 import com.repository.CityRepository;
-import com.rest.CityData;
 import com.rest.WeatherDataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
