@@ -1,7 +1,7 @@
 package com.service;
 
 import com.config.MenuManagerExceptionMessages;
-import com.config.RestTemplateConfig;
+import com.config.WeatherBitApiConnector;
 import com.repository.CityRepository;
 import com.rest.WeatherDataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ import java.util.List;
 
 @Service
 public class WeatherService {
-    private final RestTemplateConfig restTemplateConfig;
+    private final WeatherBitApiConnector restTemplateConfig;
     private final CityRepository cityRepository;
 
     @Autowired
-    public WeatherService(RestTemplateConfig restTemplateConfig, CityRepository cityRepository) {
+    public WeatherService(WeatherBitApiConnector restTemplateConfig, CityRepository cityRepository) {
         this.restTemplateConfig = restTemplateConfig;
         this.cityRepository = cityRepository;
     }
@@ -62,7 +62,13 @@ public class WeatherService {
         }
         return response;
     }
+// get current date
+// count how many days until request date
+// get current date + offset from diff data
 
+
+// fo through all data entries
+// filter by valid date
     private int daysToRequestedDate(LocalDate localDate) {
         final var currentDate = LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
         final var differenceDays = ChronoUnit.DAYS.between(currentDate, localDate);

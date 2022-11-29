@@ -1,6 +1,6 @@
 package com.service;
 
-import com.config.RestTemplateConfig;
+import com.config.WeatherBitApiConnector;
 import com.repository.CityRepository;
 import com.rest.WeatherDataResponse;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import static org.mockito.Mockito.mock;
 
 public class WeatherServiceTest {
 
-    private RestTemplateConfig restTemplateConfig;
+    private WeatherBitApiConnector restTemplateConfig;
     private final CityRepository cityRepository = mock(CityRepository.class);
     private final WeatherService weatherService = new WeatherService(restTemplateConfig, cityRepository);
     private WeatherDataResponse weatherDataResponse;
