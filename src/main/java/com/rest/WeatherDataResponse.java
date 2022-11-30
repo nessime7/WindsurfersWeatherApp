@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 public class WeatherDataResponse {
 
     private String cityName;
-    private String countryCode;
     private double windSpeed;
     private double temperature;
 }

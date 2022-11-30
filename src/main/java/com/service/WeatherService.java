@@ -53,11 +53,10 @@ public class WeatherService {
         final var cities = cityRepository.findAll();
         for (var city : cities) {
             final var cityName = restTemplateConfig.getWeather(city).getCityName();
-            final var countryCode = restTemplateConfig.getWeather(city).getCountryCode();
             final var data = restTemplateConfig.getWeather(city).getData()[specificDay];
             final var windSpeed = data.getWindSpeed();
             final var temperature = data.getTemperature();
-            final var weatherDataResponse = new WeatherDataResponse(cityName, countryCode, windSpeed, temperature);
+            final var weatherDataResponse = new WeatherDataResponse(cityName, windSpeed, temperature);
             response.add(weatherDataResponse);
         }
         return response;

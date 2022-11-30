@@ -10,8 +10,6 @@ public class CityData {
 
     @JsonProperty("city_name")
     private String cityName;
-    @JsonProperty("country_code")
-    private String countryCode;
     private String lat;
     private String lon;
     private WeatherData[] data;

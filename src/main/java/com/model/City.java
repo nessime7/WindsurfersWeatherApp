@@ -15,6 +15,4 @@ public class City {
     @GeneratedValue(generator = "UUID")
     private UUID id;
     private String cityName;
-    private String countryCode;
-
 }
