@@ -17,7 +17,7 @@ public class WeatherBitApiConnector {
 
     private final RestTemplate restTemplate;
 
-    @Value("weatherbit-api")
+    @Value("${weatherbit-api}")
     private String hostLink;
 
     @Autowired
@@ -29,7 +29,7 @@ public class WeatherBitApiConnector {
     public CityData getWeather(City city) {
         String url = hostLink + "/v2.0/forecast/daily";
         String apiKey = "c84ad94814fb4457b070f396b4029306";
-        String appUrl = url + "?city=" + city.getCityName()  + "&key=" + apiKey;
+        String appUrl = url + "?city=" + city.getCityName() + "," + city.getCountryCode() + "&key=" + apiKey;
         return restTemplate.getForObject(appUrl, CityData.class);
     }
 }
