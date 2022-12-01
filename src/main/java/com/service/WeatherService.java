@@ -48,12 +48,15 @@ public class WeatherService {
 //                .orElse(null);
     }
 
+    // metoda zwraca listę typu WeatherDataResponse, jako parametry specificDay typu int
     private List<WeatherDataResponse> getWeatherForAllCities(int specificDay) {
         final var response = new ArrayList<WeatherDataResponse>();
         final var cities = cityRepository.findAll();
         for (var city : cities) {
             final var cityName = restTemplateConfig.getWeather(city).getCityName();
+            // przypisanie do wartości data wyniku metody getData szukającym po int specificDay, getWeather dla danego miasta.
             final var data = restTemplateConfig.getWeather(city).getData()[specificDay];
+            // potem już wywołujemy resztę metod na wyszukanej dacie typu int
             final var windSpeed = data.getWindSpeed();
             final var temperature = data.getTemperature();
             final var weatherDataResponse = new WeatherDataResponse(cityName, windSpeed, temperature);
@@ -68,10 +71,15 @@ public class WeatherService {
 
 // fo through all data entries
 // filter by valid date
+
+    // metoda zwraca int, jako parametr przyjmuje localDate typu LocalDate
     private int daysToRequestedDate(LocalDate localDate) {
+        // currentDate typu currentDate, przypisanie do metody która zwraca strefową datę dzisiejszą
         final var currentDate = LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
+        // differenceDays typu long, przypisanie do obliczenia różnicy między currentDate typu LocalDate a wprowadzoną datą typu LocalDate
         final var differenceDays = ChronoUnit.DAYS.between(currentDate, localDate);
         if (differenceDays >= 0 && differenceDays < 16) {
+            // zwrócenie int differenceDays
             return (int) differenceDays;
         } else {
             throw new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE);
