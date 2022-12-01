@@ -14,7 +14,6 @@ public class WeatherData {
     private double temperature;
     @JsonProperty("wind_spd")
     private double windSpeed;
-    // sprawdzić czy potrzebne
     @JsonProperty("valid_date")
     private LocalDate validDate;
 }
