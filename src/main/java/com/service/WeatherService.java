@@ -48,7 +48,7 @@ public class WeatherService {
 
     // metody resolveWeather, zwraca typ WeatherDataResponse o parametrach requestedDate typu LocalDate
     // oraz weathers typu Lista CityData
-    public WeatherDataResponse resolveWeather(LocalDate requestedDate, List<CityData> weathers) {
+    private WeatherDataResponse resolveWeather(LocalDate requestedDate, List<CityData> weathers) {
         // przypisanie do zmiennej typu WeatherDataResponse null
         WeatherDataResponse weatherResult = null;
         // zdefiniowanie zmiennej lokalne bestLocationValue i przypisanie do niej wartości 0
@@ -80,8 +80,8 @@ public class WeatherService {
         return weatherResult;
     }
 
-    public WeatherData weatherForRequestedDate(LocalDate requestedDate, CityData weather) {
-    // zwrócenie wyniku łancucha wywołań na pobranych danych na zmiennej weather typu CityData
+    private WeatherData weatherForRequestedDate(LocalDate requestedDate, CityData weather) {
+        // zwrócenie wyniku łancucha wywołań na pobranych danych na zmiennej weather typu CityData
         return weather.getData().stream()
                 // filtrujemy i sprawdzamy czy getValidateDate jest równe requestedDate
                 .filter(w -> w.getValidDate().equals(requestedDate))
@@ -91,7 +91,9 @@ public class WeatherService {
                 .orElseThrow();
     }
 
-    public double bestLocationCalculator(double windSpd, double temp) {
+    private double bestLocationCalculator(double windSpd, double temp) {
         return windSpd * 3 + temp;
     }
 }
+
+// jeśli inna klasa potrzebuje dostępu do mojej metody, to musi być publiczna
