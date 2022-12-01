@@ -15,12 +15,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class WeatherService {
-    private final WeatherBitApiConnector restTemplateConfig;
+    private final WeatherBitApiConnector weatherBitApiConnector;
     private final CityRepository cityRepository;
 
     @Autowired
-    public WeatherService(WeatherBitApiConnector restTemplateConfig, CityRepository cityRepository) {
-        this.restTemplateConfig = restTemplateConfig;
+    public WeatherService(WeatherBitApiConnector weatherBitApiConnector, CityRepository cityRepository) {
+        this.weatherBitApiConnector = weatherBitApiConnector;
         this.cityRepository = cityRepository;
     }
 
@@ -37,16 +37,18 @@ public class WeatherService {
         // zmienna weathers i zwrócenie wyniku łancucha wywołań na zmiennych cities
         final var weathers = cities.stream()
                 // dla każdego miasta pobiera pogodę z 16 dni
-                .map(restTemplateConfig::getWeather)
+                .map(weatherBitApiConnector::getWeather)
                 // przypisanie pobranych danych do listy
                 .collect(Collectors.toList());
         // zwrócenie wyniku metody resolveWeather o paramatrach requestedDate oraz Listy Weathers
+        // czyli mamy naszą datę i nasze miasta z pobraną pogodą WeatherData(temperature, windspd, validdate),
+        // oraz info z CityData z 16 dni
         return resolveWeather(requestedDate, weathers);
     }
 
     // metody resolveWeather, zwraca typ WeatherDataResponse o parametrach requestedDate typu LocalDate
     // oraz weathers typu Lista CityData
-    private WeatherDataResponse resolveWeather(LocalDate requestedDate, List<CityData> weathers) {
+    public WeatherDataResponse resolveWeather(LocalDate requestedDate, List<CityData> weathers) {
         // przypisanie do zmiennej typu WeatherDataResponse null
         WeatherDataResponse weatherResult = null;
         // zdefiniowanie zmiennej lokalne bestLocationValue i przypisanie do niej wartości 0
@@ -55,6 +57,7 @@ public class WeatherService {
         for (final var weather : weathers) {
             // zmienna weatherForRequestedDate, przypisanie do niej wyniku metody weatherForRequestedDate
             // o parametrach requestedDate oraz weather
+            // czyli mamy pogodę danej daty z danego miasta
             final var weatherForRequestedDate = weatherForRequestedDate(requestedDate, weather);
             if ((weatherForRequestedDate.getTemperature() > 5 && weatherForRequestedDate.getTemperature() < 35) &&
                     (weatherForRequestedDate.getWindSpeed() > 5 && weatherForRequestedDate.getWindSpeed() < 18)) {
@@ -77,7 +80,7 @@ public class WeatherService {
         return weatherResult;
     }
 
-    private WeatherData weatherForRequestedDate(LocalDate requestedDate, CityData weather) {
+    public WeatherData weatherForRequestedDate(LocalDate requestedDate, CityData weather) {
     // zwrócenie wyniku łancucha wywołań na pobranych danych na zmiennej weather typu CityData
         return weather.getData().stream()
                 // filtrujemy i sprawdzamy czy getValidateDate jest równe requestedDate
