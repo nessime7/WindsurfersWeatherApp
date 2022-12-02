@@ -89,7 +89,6 @@ public class WeatherServiceTest {
         // given
         final var firstCityName = new City(UUID.randomUUID(), "Kraków");
         final var secondCityName = new City(UUID.randomUUID(), "Warszawa");
-        when(cityRepository.findAll()).thenReturn(java.util.List.of(firstCityName, secondCityName));
         final var firstData = new WeatherData(2.0, 1.0, LocalDate.from(LocalDate.now()));
         final var secondData = new WeatherData(2.0, 1.0, LocalDate.from(LocalDate.now()));
         final var firstCity = new CityData("Kraków", "1", "1", Set.of(firstData));
