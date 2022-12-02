@@ -88,7 +88,7 @@ public class WeatherService {
                 // znajdź pierwszy
                 .findAny()
                 // lub wyrzuć wyjątek
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE));
     }
 
     private double bestLocationCalculator(double windSpd, double temp) {
