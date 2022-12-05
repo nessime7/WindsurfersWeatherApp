@@ -7,13 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-// componenet vs configuration vs service vs controller vs repository - done
 @Component
 public class WeatherBitApiConnector {
-    // nazewnictwo
-    // [rzeczownik(l.poj)][czasownik okreslajacy co robi klasa]
-    // przyklady: WeatherBitApiConnector, WeatherController
-    // slownictwo dla suffiksow: Connector, Controller, Service, Config, Processor, Resolver,Respository
 
     private final RestTemplate restTemplate;
 
