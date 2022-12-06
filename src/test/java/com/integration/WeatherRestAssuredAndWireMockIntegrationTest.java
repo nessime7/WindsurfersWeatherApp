@@ -12,20 +12,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 @ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = {WindsurfersWeatherAppSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@WireMockTest(httpPort = 8081)
+// @SpringBootTest(classes = {WindsurfersWeatherAppSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
+@WireMockTest(httpsEnabled = true, httpPort = 8081)
 @AutoConfigureMockMvc
 public class WeatherRestAssuredAndWireMockIntegrationTest {
 
-    @LocalServerPort
-    private int port;
-    private static final String CONTEXT = "weather";
+//    @LocalServerPort
+//    private int port;
+//    private static final String CONTEXT = "weather";
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,9 +51,9 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
 
         this.mockMvc.perform(
                         MockMvcRequestBuilders.get("/weather/2022-12-05")
-                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                                .accept("application/json"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andExpect(content().json("{}"));
     }
 }
 
