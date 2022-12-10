@@ -2,7 +2,6 @@ package com.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import com.rest.WeatherDataResponse;
 import io.restassured.path.json.JsonPath;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +14,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.ResourceUtils;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-
 
 @SpringBootTest
 @WireMockTest(httpPort = 8081)
@@ -34,7 +30,7 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
-    void should_check_weather_and_return_200() throws Exception {
+    void should_check_weather_and_return_200_from_today() throws Exception {
         // given
         stubFor(get("/v2.0/forecast/daily?city=Jastarnia&key=c84ad94814fb4457b070f396b4029306")
                 .willReturn(aResponse()
@@ -87,64 +83,111 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
     }
 
     @Test
-    void should_return_500_when_key_is_wrong() throws Exception {
+    void should_return_500_when_date_is_from_past() throws Exception {
         // given
-        stubFor(get("/v2.0/forecast/daily?city=Jastarnia&key=c84ad94814fb4457b070f396b402930X")
+        stubFor(get("/v2.0/forecast/daily?city=Jastarnia&key=c84ad94814fb4457b070f396b4029306")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(403)
                         .withBody(
-                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bad-key-response.json"))
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/jastarnia-response.json"))
                                         .prettyPrint())
                 )
         );
-        stubFor(get("/v2.0/forecast/daily?city=Bridgetown&key=c84ad94814fb4457b070f396b402930X")
+        stubFor(get("/v2.0/forecast/daily?city=Bridgetown&key=c84ad94814fb4457b070f396b4029306")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(403)
                         .withBody(
-                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bad-key-response.json"))
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bridgetown-response.json"))
                                         .prettyPrint())
                 )
         );
-        stubFor(get("/v2.0/forecast/daily?city=Fortaleza&key=c84ad94814fb4457b070f396b402930X")
+        stubFor(get("/v2.0/forecast/daily?city=Fortaleza&key=c84ad94814fb4457b070f396b4029306")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(403)
                         .withBody(
-                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bad-key-response.json"))
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/fortaleza-response.json"))
                                         .prettyPrint())
                 )
         );
-        stubFor(get("/v2.0/forecast/daily?city=Le%20Morne&key=c84ad94814fb4457b070f396b402930X")
+        stubFor(get("/v2.0/forecast/daily?city=Le%20Morne&key=c84ad94814fb4457b070f396b4029306")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(403)
                         .withBody(
-                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bad-key-response.json"))
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/leMorne-response.json"))
                                         .prettyPrint())
                 )
         );
-        stubFor(get("/v2.0/forecast/daily?city=Pissouri&key=c84ad94814fb4457b070f396b402930X")
+        stubFor(get("/v2.0/forecast/daily?city=Pissouri&key=c84ad94814fb4457b070f396b4029306")
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(403)
                         .withBody(
-                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bad-key-response.json"))
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/pissouri-response.json"))
                                         .prettyPrint())
                 )
         );
 
         // then
-        mockMvc.perform(
-                        MockMvcRequestBuilders.get("/weather/2022-12-10"))
+        var mvcResult = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/weather/2022-12-06"))
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().is(500))
-                .andExpect(content().string("{\"message\":\"Key is not found.\"}"))
+                .andExpect(content().string("{\"message\":\"Wrong date. You can choose 16 day range from today.\"}"))
+                .andReturn();
+    }
+
+    @Test
+    void should_return_500_when_date_is_from_future() throws Exception {
+        // given
+        stubFor(get("/v2.0/forecast/daily?city=Jastarnia&key=c84ad94814fb4457b070f396b4029306")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/jastarnia-response.json"))
+                                        .prettyPrint())
+                )
+        );
+        stubFor(get("/v2.0/forecast/daily?city=Bridgetown&key=c84ad94814fb4457b070f396b4029306")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/bridgetown-response.json"))
+                                        .prettyPrint())
+                )
+        );
+        stubFor(get("/v2.0/forecast/daily?city=Fortaleza&key=c84ad94814fb4457b070f396b4029306")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/fortaleza-response.json"))
+                                        .prettyPrint())
+                )
+        );
+        stubFor(get("/v2.0/forecast/daily?city=Le%20Morne&key=c84ad94814fb4457b070f396b4029306")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/leMorne-response.json"))
+                                        .prettyPrint())
+                )
+        );
+        stubFor(get("/v2.0/forecast/daily?city=Pissouri&key=c84ad94814fb4457b070f396b4029306")
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(
+                                new JsonPath(ResourceUtils.getFile("classpath:weather/response/pissouri-response.json"))
+                                        .prettyPrint())
+                )
+        );
+
+        // then
+        var mvcResult = mockMvc.perform(
+                        MockMvcRequestBuilders.get("/weather/2023-12-06"))
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().is(500))
+                .andExpect(content().string("{\"message\":\"Wrong date. You can choose 16 day range from today.\"}"))
                 .andReturn();
     }
 }
-
 
 //        wywołanie mojego API używając restAssured
 //        given()
@@ -164,27 +207,12 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
 // @ExtendWith(SpringExtension.class)
 // @SpringBootTest(classes = {WindsurfersWeatherAppSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
-//    stubFor(get(urlEqualTo("/v2.0/forecast/daily?city=Jastarnia&key=c84ad94814fb4457b070f396b4029306")).willReturn(aResponse()
-//        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
-//        .withBody("response/jastarnia-response.json")));
-//        stubFor(get(urlEqualTo("/v2.0/forecast/daily?city=Bridgetown&key=c84ad94814fb4457b070f396b4029306")).willReturn(aResponse()
-//        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
-//        .withBody("response/bridgetown-response.json")));
-//        stubFor(get(urlEqualTo("/v2.0/forecast/daily?city=Fortaleza&key=c84ad94814fb4457b070f396b4029306")).willReturn(aResponse()
-//        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
-//        .withBody("response/fortaleza-response.json")));
-//        stubFor(get(urlEqualTo("/v2.0/forecast/daily?city=Pissouri&key=c84ad94814fb4457b070f396b4029306")).willReturn(aResponse()
-//        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
-//        .withBody("response/response/pissouri-response.json")));
-//        stubFor(get(urlEqualTo("/v2.0/forecast/daily?city=LeMorne&key=c84ad94814fb4457b070f396b4029306")).willReturn(aResponse()
-//        .withHeader("Content-type", MediaType.APPLICATION_JSON_VALUE)
-//        .withBody("response/response/leMorne-response")));
-
-// testowanie negatywnego scenariusza, napisać test
-
 //    // then
 //    var response = objectMapper.readValue(mvcResult.getResponse()
 //            .getContentAsString(UTF_8), WeatherDataResponse.class);
 //    assertEquals("Jastarnia", response.getCityName());
 //        assertEquals(20.0, response.getTemperature());
 //        assertEquals(12.0, response.getWindSpeed());
+
+// 500, coś się stało co było nieoczekiwane, nie ma żadnego mechanizmu który by to rozwiązywał,
+// w idealnym świecie nasz program obsługuje te złe scenariusze, musi zwracać 403, więc najlepiej w serwisie obsłużyć wszystkie możliwości

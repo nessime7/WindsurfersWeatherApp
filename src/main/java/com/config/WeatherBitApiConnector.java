@@ -8,6 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.Objects;
+
 @Component
 public class WeatherBitApiConnector {
 
@@ -22,18 +24,14 @@ public class WeatherBitApiConnector {
     }
 
     public CityData getWeather(City city) {
-      String key = "c84ad94814fb4457b070f396b4029306";
-     //   String key = null;
-//        if (!key.equals("c84ad94814fb4457b070f396b4029306")){
-//            throw new IllegalStateException(MenuManagerExceptionMessages.BAD_KEY);
-//        } else {
-//            key = "c84ad94814fb4457b070f396b4029306";
-//        }
-            final var builder = UriComponentsBuilder.fromUriString(hostLink)
+        String key = "c84ad94814fb4457b070f396b4029306";
+
+        final var builder = UriComponentsBuilder.fromUriString(hostLink)
                 .queryParam("city", city.getCityName())
                 .queryParam("key", key)
                 .build()
                 .toUri();
-                return restTemplate.getForObject(builder, CityData.class);
+        return restTemplate.getForObject(builder, CityData.class);
+
     }
 }
