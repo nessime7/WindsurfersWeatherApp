@@ -48,7 +48,6 @@ public class WeatherServiceTest {
 
     @Test
     void should_return_exception_null_data_response() {
-
         // given
         final var firstCityName = new City(UUID.randomUUID(), "Kraków");
         final var secondCityName = new City(UUID.randomUUID(), "Warszawa");
@@ -67,7 +66,6 @@ public class WeatherServiceTest {
 
     @Test
     void should_return_exception_wrong_date() {
-
         // given
         final var firstCityName = new City(UUID.randomUUID(), "Kraków");
         final var secondCityName = new City(UUID.randomUUID(), "Warszawa");
