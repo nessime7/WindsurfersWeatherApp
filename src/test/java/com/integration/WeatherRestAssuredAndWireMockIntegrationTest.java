@@ -77,7 +77,7 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
         var mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.get("/weather/2022-12-10"))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is(500))
+                .andExpect(MockMvcResultMatchers.status().is(403))
                 .andExpect(content().string("{\"message\":\"No matching city found.\"}"))
                 .andReturn();
     }
@@ -130,7 +130,7 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
         var mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.get("/weather/2022-12-06"))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is(500))
+                .andExpect(MockMvcResultMatchers.status().is(403))
                 .andExpect(content().string("{\"message\":\"Wrong date. You can choose 16 day range from today.\"}"))
                 .andReturn();
     }
@@ -183,7 +183,7 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
         var mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.get("/weather/2023-12-06"))
                 .andDo(print())
-                .andExpect(MockMvcResultMatchers.status().is(500))
+                .andExpect(MockMvcResultMatchers.status().is(403))
                 .andExpect(content().string("{\"message\":\"Wrong date. You can choose 16 day range from today.\"}"))
                 .andReturn();
     }

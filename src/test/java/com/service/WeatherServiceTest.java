@@ -60,7 +60,7 @@ public class WeatherServiceTest {
         when(weatherBitApiConnector.getWeather(secondCityName)).thenReturn(secondCity);
 
         // then
-        var ex = assertThrows(IllegalStateException.class, () -> weatherService.getBestLocation(LocalDate.from(LocalDate.now())));
+        var ex = assertThrows(IllegalArgumentException.class, () -> weatherService.getBestLocation(LocalDate.from(LocalDate.now())));
         assertThat(ex.getMessage(), is("No matching city found."));
     }
 
@@ -78,7 +78,7 @@ public class WeatherServiceTest {
         when(weatherBitApiConnector.getWeather(secondCityName)).thenReturn(secondCity);
 
         // then
-        var ex = assertThrows(IllegalStateException.class, () -> weatherService.getBestLocation(LocalDate.of(2021, 12, 2)));
+        var ex = assertThrows(IllegalArgumentException.class, () -> weatherService.getBestLocation(LocalDate.of(2021, 12, 2)));
         assertThat(ex.getMessage(), is("Wrong date. You can choose 16 day range from today."));
     }
 }

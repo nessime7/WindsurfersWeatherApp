@@ -1,6 +1,5 @@
 package com.service;
 
-import com.config.MenuManagerExceptionMessages;
 import com.config.WeatherBitApiConnector;
 import com.repository.CityRepository;
 import com.rest.CityData;
@@ -75,7 +74,8 @@ public class WeatherService {
             }
         }
         if (weatherResult == null) {
-            throw new IllegalStateException(MenuManagerExceptionMessages.NULL_DATA_RESPONSE);
+//            throw new IllegalStateException(MenuManagerExceptionMessages.NULL_DATA_RESPONSE);
+            throw new IllegalArgumentException("No matching city found.");
         }
         return weatherResult;
     }
@@ -88,7 +88,8 @@ public class WeatherService {
                 // znajdź pierwszy
                 .findAny()
                 // lub wyrzuć wyjątek
-                .orElseThrow(() -> new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE));
+//                .orElseThrow(() -> new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE));
+                .orElseThrow(() -> new IllegalArgumentException("Wrong date. You can choose 16 day range from today."));
     }
 
     private double bestLocationCalculator(double windSpd, double temp) {

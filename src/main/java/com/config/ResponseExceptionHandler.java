@@ -9,17 +9,21 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import java.util.Map;
 
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 @ControllerAdvice
-public class ResponseExceptionHandler
+public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-        extends ResponseEntityExceptionHandler {
-
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Object> handleAccessDeniedException(
-            Exception ex, WebRequest request) {
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Object> handle(IllegalArgumentException ex, WebRequest request) {
+        ex.printStackTrace();
         return new ResponseEntity<>(
-                Map.of("message", ex.getMessage()), new HttpHeaders(), SC_INTERNAL_SERVER_ERROR);
+                Map.of("message", ex.getMessage()), new HttpHeaders(), FORBIDDEN);
     }
 }
+
+//    public static final String WRONG_DATE = "Wrong date. You can choose 16 day range from today.";
+//    public static final String NULL_DATA_RESPONSE = "No matching city found.";
+//    private MenuManagerExceptionMessages() {
+//        throw new AssertionError("No MenuManagerExceptionMessages instances for you!");
+//    }

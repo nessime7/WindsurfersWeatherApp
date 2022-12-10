@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Objects;
-
 @Component
 public class WeatherBitApiConnector {
 
