@@ -2,8 +2,10 @@ package com.integration;
 
 import com.rest.WeatherDataResponse;
 import com.service.WeatherService;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +23,7 @@ public class WeatherController {
     }
 
     @GetMapping("/weather/{localDate}")
-    WeatherDataResponse getLocationWithBestWeather(@PathVariable(value = "localDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate) {
-        return weatherService.getBestLocation(localDate);
+    ResponseEntity<WeatherDataResponse> getLocationWithBestWeather(@PathVariable(value = "localDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate localDate) {
+        return ResponseEntity.ok(weatherService.getBestLocation(localDate));
     }
 }

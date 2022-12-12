@@ -1,92 +1,100 @@
 package com.service;
 
-import com.config.MenuManagerExceptionMessages;
 import com.config.WeatherBitApiConnector;
 import com.repository.CityRepository;
+import com.rest.CityData;
+import com.rest.WeatherData;
 import com.rest.WeatherDataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WeatherService {
-    private final WeatherBitApiConnector restTemplateConfig;
+    private final WeatherBitApiConnector weatherBitApiConnector;
     private final CityRepository cityRepository;
 
     @Autowired
-    public WeatherService(WeatherBitApiConnector restTemplateConfig, CityRepository cityRepository) {
-        this.restTemplateConfig = restTemplateConfig;
+    public WeatherService(WeatherBitApiConnector weatherBitApiConnector, CityRepository cityRepository) {
+        this.weatherBitApiConnector = weatherBitApiConnector;
         this.cityRepository = cityRepository;
     }
 
-    public WeatherDataResponse getBestLocation(LocalDate localDate) {
-        final List<WeatherDataResponse> result = getWeatherForAllCities(daysToRequestedDate(localDate));
+    /*
+    pobieramy miasta
+    pobieramy pogody dla miast, czyli filtrujemy pogode dla konkretnego dnia
+    wybieramy miasto z najlepsza pogoda i to zwracamy
+     */
+
+    // metoda getBestLocation typu WeatherDataResponse z parametrami requestedDate typu LocalDate
+    public WeatherDataResponse getBestLocation(LocalDate requestedDate) {
+        // zmienna cities i przypisanie wyniku metody findAll na polu obiektu cityRepository
+        final var cities = cityRepository.findAll();
+        // zmienna weathers i zwrócenie wyniku łancucha wywołań na zmiennych cities
+        final var weathers = cities.stream()
+                // dla każdego miasta pobiera pogodę z 16 dni
+                .map(weatherBitApiConnector::getWeather)
+                // przypisanie pobranych danych do listy
+                .collect(Collectors.toList());
+        // zwrócenie wyniku metody resolveWeather o paramatrach requestedDate oraz Listy Weathers
+        // czyli mamy naszą datę i nasze miasta z pobraną pogodą WeatherData(temperature, windspd, validdate),
+        // oraz info z CityData z 16 dni
+        return resolveWeather(requestedDate, weathers);
+    }
+
+    // metody resolveWeather, zwraca typ WeatherDataResponse o parametrach requestedDate typu LocalDate
+    // oraz weathers typu Lista CityData
+    private WeatherDataResponse resolveWeather(LocalDate requestedDate, List<CityData> weathers) {
+        // przypisanie do zmiennej typu WeatherDataResponse null
         WeatherDataResponse weatherResult = null;
+        // zdefiniowanie zmiennej lokalne bestLocationValue i przypisanie do niej wartości 0
         final var bestLocationValue = 0;
-        for (WeatherDataResponse item : result) {
-            if ((item.getTemperature() > 5 && item.getTemperature() < 35) &&
-                    (item.getWindSpeed() > 5 && item.getWindSpeed() < 18)) {
-                final var currentCityLocationValue = bestLocationCalculator(item.getWindSpeed(), item.getTemperature());
+        // dla każdego elementu tablicy Weathers przypisujemy zmienną weather
+        for (final var weather : weathers) {
+            // zmienna weatherForRequestedDate, przypisanie do niej wyniku metody weatherForRequestedDate
+            // o parametrach requestedDate oraz weather
+            // czyli mamy pogodę danej daty z danego miasta
+            final var weatherForRequestedDate = weatherForRequestedDate(requestedDate, weather);
+            if ((weatherForRequestedDate.getTemperature() > 5 && weatherForRequestedDate.getTemperature() < 35) &&
+                    (weatherForRequestedDate.getWindSpeed() > 5 && weatherForRequestedDate.getWindSpeed() < 18)) {
+                // przypisanie do zmiennej currentCityLocationValue wymiku metody bestLocationCalculator z parametrami
+                // getWindSpeed, getTemperature
+                final var currentCityLocationValue = bestLocationCalculator(weatherForRequestedDate.getWindSpeed(),
+                        weatherForRequestedDate.getTemperature());
+                // jeśli wynik zmiennej currentCityLocationValue jest większe niż 0
                 if (currentCityLocationValue > bestLocationValue) {
-                    weatherResult = item;
+                    // zmienna weatherResult przypisanie nowej odpowiedzi WeatherDataResponse o parametach
+                    weatherResult = new WeatherDataResponse(weather.getCityName(),
+                            weatherForRequestedDate.getWindSpeed(),
+                            weatherForRequestedDate.getTemperature());
                 }
             }
         }
         if (weatherResult == null) {
-            throw new IllegalStateException(MenuManagerExceptionMessages.NULL_DATA_RESPONSE);
+//            throw new IllegalStateException(MenuManagerExceptionMessages.NULL_DATA_RESPONSE);
+            throw new IllegalArgumentException("No matching city found.");
         }
         return weatherResult;
-//        return result.stream()
-//                .filter(city -> city.getTemp() > 5 && city.getTemp() < 35)
-//                .filter(city -> city.getWind_spd() > 5 && city.getWind_spd() < 18)
-//                .max(Comparator.comparing(weather -> bestLocationCalculator(weather.getWind_spd(), weather.getTemp())))
-//                .orElse(null);
     }
 
-    // metoda zwraca listę typu WeatherDataResponse, jako parametry specificDay typu int
-    private List<WeatherDataResponse> getWeatherForAllCities(int specificDay) {
-        final var response = new ArrayList<WeatherDataResponse>();
-        final var cities = cityRepository.findAll();
-        for (var city : cities) {
-            final var cityName = restTemplateConfig.getWeather(city).getCityName();
-            // przypisanie do wartości data wyniku metody getData szukającym po int specificDay, getWeather dla danego miasta.
-            final var data = restTemplateConfig.getWeather(city).getData()[specificDay];
-            // potem już wywołujemy resztę metod na wyszukanej dacie typu int
-            final var windSpeed = data.getWindSpeed();
-            final var temperature = data.getTemperature();
-            final var weatherDataResponse = new WeatherDataResponse(cityName, windSpeed, temperature);
-            response.add(weatherDataResponse);
-        }
-        return response;
-    }
-// get current date
-// count how many days until request date
-// get current date + offset from diff data
-
-
-// fo through all data entries
-// filter by valid date
-
-    // metoda zwraca int, jako parametr przyjmuje localDate typu LocalDate
-    private int daysToRequestedDate(LocalDate localDate) {
-        // currentDate typu currentDate, przypisanie do metody która zwraca strefową datę dzisiejszą
-        final var currentDate = LocalDate.from(LocalDate.now().atStartOfDay(ZoneId.systemDefault()));
-        // differenceDays typu long, przypisanie do obliczenia różnicy między currentDate typu LocalDate a wprowadzoną datą typu LocalDate
-        final var differenceDays = ChronoUnit.DAYS.between(currentDate, localDate);
-        if (differenceDays >= 0 && differenceDays < 16) {
-            // zwrócenie int differenceDays
-            return (int) differenceDays;
-        } else {
-            throw new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE);
-        }
+    private WeatherData weatherForRequestedDate(LocalDate requestedDate, CityData weather) {
+        // zwrócenie wyniku łancucha wywołań na pobranych danych na zmiennej weather typu CityData
+        return weather.getData().stream()
+                // filtrujemy i sprawdzamy czy getValidateDate jest równe requestedDate
+                .filter(w -> w.getValidDate().equals(requestedDate))
+                // znajdź pierwszy
+                .findAny()
+                // lub wyrzuć wyjątek
+//                .orElseThrow(() -> new IllegalStateException(MenuManagerExceptionMessages.WRONG_DATE));
+                .orElseThrow(() -> new IllegalArgumentException("Wrong date. You can choose 16 day range from today."));
     }
 
-    public double bestLocationCalculator(double windSpd, double temp) {
+    private double bestLocationCalculator(double windSpd, double temp) {
         return windSpd * 3 + temp;
     }
 }
+
+// jeśli inna klasa potrzebuje dostępu do mojej metody, to musi być publiczna
