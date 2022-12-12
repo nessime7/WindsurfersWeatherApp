@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 // nie mockuję wywołań prywatnej klas w tej samej klasie
-// brunch 2
+// branch 584932
 
 public class WeatherServiceTest {
 
