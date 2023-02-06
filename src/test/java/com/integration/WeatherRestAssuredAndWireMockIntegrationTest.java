@@ -188,31 +188,3 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
                 .andReturn();
     }
 }
-
-//        wywołanie mojego API używając restAssured
-//        given()
-//                .when().get("/weather/{localDate}", LocalDate.now().format(formatter))
-//                .then()
-//                .statusCode(HttpStatus.SC_OK)
-//                .and()
-//                .body("", equalTo(TestUtils.getPath("response/weather-response.json", CONTEXT).get("")));
-//         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-//    @LocalServerPort
-//    private int port;
-//    private static final String CONTEXT = "weather";
-
-///////////////////////////////////////
-
-// @ExtendWith(SpringExtension.class)
-// @SpringBootTest(classes = {WindsurfersWeatherAppSaraApplication.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
-//    // then
-//    var response = objectMapper.readValue(mvcResult.getResponse()
-//            .getContentAsString(UTF_8), WeatherDataResponse.class);
-//    assertEquals("Jastarnia", response.getCityName());
-//        assertEquals(20.0, response.getTemperature());
-//        assertEquals(12.0, response.getWindSpeed());
-
-// 500, coś się stało co było nieoczekiwane, nie ma żadnego mechanizmu który by to rozwiązywał,
-// w idealnym świecie nasz program obsługuje te złe scenariusze, musi zwracać 403, więc najlepiej w serwisie obsłużyć wszystkie możliwości

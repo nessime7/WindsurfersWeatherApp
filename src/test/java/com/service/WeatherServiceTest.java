@@ -18,9 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-// nie mockuję wywołań prywatnej klas w tej samej klasie
-// branch 584932
-
 public class WeatherServiceTest {
 
     private final WeatherBitApiConnector weatherBitApiConnector = mock(WeatherBitApiConnector.class);

@@ -30,6 +30,5 @@ public class WeatherBitApiConnector {
                 .build()
                 .toUri();
         return restTemplate.getForObject(builder, CityData.class);
-
     }
 }
