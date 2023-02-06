@@ -26,9 +26,6 @@ public class WeatherRestAssuredAndWireMockIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
     @Test
     void should_check_weather_and_return_200_from_today() throws Exception {
         // given
