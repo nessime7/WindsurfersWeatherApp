@@ -22,7 +22,7 @@ public class WeatherBitApiConnector {
     }
 
     public CityData getWeather(City city) {
-        String key = "c84ad94814fb4457b070f396b4029306";
+        String key = "a29a7c73003045c28d3a2cc9592f1605";
 
         final var builder = UriComponentsBuilder.fromUriString(hostLink)
                 .queryParam("city", city.getCityName())

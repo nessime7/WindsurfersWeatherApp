@@ -1,7 +1,7 @@
 # Windsurfer's Weather App
 
 ## Description:
-App will help you find the best place for Windsurfing around the whole world. 
+Web app helps you find the best place for Windsurfing around the whole world. 
 For example in places:
 1. Jastarnia (Poland)
 2. Bridgetown (Barbados)
@@ -39,6 +39,20 @@ java -jar build/libs/Windsurfers-Weather-App-Sara-0.0.1-SNAPSHOT.jar
 After execution of above command, the service will start at port 8080.
 
 Date format: yyyy-mm-dd
+
+## Example request
+```
+curl --location 'localhost:8080/weather/2023-03-15'
+```
+
+## Example response
+```
+{
+"cityName": "Pissouri",
+"windSpeed": 5.6,
+"temperature": 14.9
+}
+```
 
 Check files:
 ```
