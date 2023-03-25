@@ -8,6 +8,7 @@ For example in places:
 3. Fortaleza (Brazil)
 4. Pissouri (Cyprus)
 5. Le Morne (Mauritius)
+
 If there are no available locations - application will return information:
 "No matching city found."
 
